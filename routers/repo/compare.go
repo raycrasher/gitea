@@ -357,7 +357,7 @@ func GetRelatedRepos(ctx *Context, repo *models.Repository) ([]*Repository, erro
 
 	RetrieveBaseRepo(ctx, repo)
 	if repo.BaseRepo != nil {
-		baseRepoForks: = repo.BaseRepo.GetForks()
+		baseRepoForks := repo.BaseRepo.GetForks()
 		for i := 0; i < len(baseRepoForks); i+=1 {
 			repoHash[baseRepoForks[i]] = dummy
 		}
