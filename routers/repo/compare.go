@@ -46,6 +46,7 @@ func ParseCompareInfo(ctx *context.Context) (*models.User, *models.Repository, *
 
 	baseBranch := infos[0]
 	ctx.Data["BaseBranch"] = baseBranch
+	ctx.Data["BaseRepo"] = baseRepo
 
 	// If there is no head repository, it means compare between same repository.
 	headInfos := strings.Split(infos[1], ":")
@@ -319,6 +320,10 @@ func CompareDiff(ctx *context.Context) {
 			return
 		}
 		ctx.Data["HeadBranches"] = headBranches
+
+		// if fork, then get related repos
+		relatedRepos, err := GetRelatedRepos(ctx.Repo)
+		ctx.Data["RelatedRepos"] = relatedRepos
 	}
 	beforeCommitID := ctx.Data["BeforeCommitID"].(string)
 	afterCommitID := ctx.Data["AfterCommitID"].(string)
@@ -334,4 +339,52 @@ func CompareDiff(ctx *context.Context) {
 	renderAttachmentSettings(ctx)
 
 	ctx.HTML(200, tplCompare)
+}
+
+func GetRelatedRepos(ctx *Context, repo *models.Repository) ([]*Repository, error) {
+	repoHash := make(map[*Repository] struct{})
+	dummy := make(struct{})
+
+	thisForks,err := repo.GetForks()
+
+	if err == nil {
+		for i := 0; i < len(thisForks); i+=1 {
+			repoHash[thisForks[i]] = dummy
+		}
+	}
+
+	RetrieveBaseRepo(ctx, repo)
+	if repo.BaseRepo != nil {
+		baseRepoForks: = repo.BaseRepo.GetForks()
+		for i := 0; i < len(baseRepoForks); i+=1 {
+			repoHash[baseRepoForks[i]] = dummy
+		}
+	}
+
+	repoHash[repo] = dummy
+
+	repos := make([]*Repository, nil, len(repoHash))
+
+	for k := range repoHash {
+        repos = append(repos, k)
+    }
+	
+	return 
+}
+
+// RetrieveBaseRepo retrieves base repository
+func RetrieveBaseRepo(ctx *Context, repo *models.Repository) {
+	// Non-fork repository will not return error in this method.
+	if err := repo.GetBaseRepo(); err != nil {
+		if models.IsErrRepoNotExist(err) {
+			repo.IsFork = false
+			repo.ForkID = 0
+			return
+		}
+		ctx.ServerError("GetBaseRepo", err)
+		return
+	} else if err = repo.BaseRepo.GetOwner(); err != nil {
+		ctx.ServerError("BaseRepo.GetOwner", err)
+		return
+	}
 }

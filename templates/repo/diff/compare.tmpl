@@ -40,6 +40,24 @@
 				<div class="menu">
 					<div class="ui icon search input">
 						<i class="filter icon"></i>
+						<input name="search" placeholder="Filter repositories...">
+					</div>
+					<div class="scrolling menu">
+						{{range .RelatedRepos}}
+							<div class="{{if eq $.HeadRepo .}}selected{{end}} item" data-url="{{$.RepoLink}}/compare/{{EscapePound $.BaseBranch}}...{{if not $.PullRequestCtx.SameRepo}}{{.User.Name}}:{{end}}{{EscapePound .}}">{{.User.Name}}:{{.Name}}</div>
+						{{end}}
+					</div>
+				</div>
+			</div>
+			:
+			<div class="ui floating filter dropdown">
+				<div class="ui basic small button">
+					<span class="text">{{.i18n.Tr "repo.pulls.compare_compare"}}: {{$.HeadUser.Name}}:{{$.HeadBranch}}</span>
+					<i class="dropdown icon"></i>
+				</div>
+				<div class="menu">
+					<div class="ui icon search input">
+						<i class="filter icon"></i>
 						<input name="search" placeholder="{{.i18n.Tr "repo.pulls.filter_branch"}}...">
 					</div>
 					<div class="scrolling menu">
