@@ -343,8 +343,8 @@ func CompareDiff(ctx *context.Context) {
 	ctx.HTML(200, tplCompare)
 }
 
-func GetRelatedRepos(ctx *Context, repo *models.Repository) ([]*Repository, error) {
-	repoHash := make(map[*Repository] struct{})
+func GetRelatedRepos(ctx *context.Context, repo *models.Repository) ([]*models.Repository, error) {
+	repoHash := make(map[*models.Repository] struct{})
 	dummy := make(struct{})
 
 	thisForks,err := repo.GetForks()
@@ -357,7 +357,7 @@ func GetRelatedRepos(ctx *Context, repo *models.Repository) ([]*Repository, erro
 
 	RetrieveBaseRepo(ctx, repo)
 	if repo.BaseRepo != nil {
-		baseRepoForks := repo.BaseRepo.GetForks()
+		baseRepoForks, err := repo.BaseRepo.GetForks()
 		for i := 0; i < len(baseRepoForks); i+=1 {
 			repoHash[baseRepoForks[i]] = dummy
 		}
@@ -365,7 +365,7 @@ func GetRelatedRepos(ctx *Context, repo *models.Repository) ([]*Repository, erro
 
 	repoHash[repo] = dummy
 
-	repos := make([]*Repository, nil, len(repoHash))
+	repos := make([]*models.Repository, nil, len(repoHash))
 
 	for k := range repoHash {
         repos = append(repos, k)
@@ -375,7 +375,7 @@ func GetRelatedRepos(ctx *Context, repo *models.Repository) ([]*Repository, erro
 }
 
 // RetrieveBaseRepo retrieves base repository
-func RetrieveBaseRepo(ctx *Context, repo *models.Repository) {
+func RetrieveBaseRepo(ctx *context.Context, repo *models.Repository) {
 	// Non-fork repository will not return error in this method.
 	if err := repo.GetBaseRepo(); err != nil {
 		if models.IsErrRepoNotExist(err) {
