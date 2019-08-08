@@ -345,7 +345,7 @@ func CompareDiff(ctx *context.Context) {
 
 func GetRelatedRepos(ctx *context.Context, repo *models.Repository) ([]*models.Repository, error) {
 	repoHash := make(map[*models.Repository] struct{})
-	dummy := make(struct{})
+	dummy := struct{}{}
 
 	thisForks,err := repo.GetForks()
 
