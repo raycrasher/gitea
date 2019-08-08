@@ -324,7 +324,7 @@ func CompareDiff(ctx *context.Context) {
 		ctx.Data["HeadBranches"] = headBranches
 
 		// if fork, then get related repos
-		relatedRepos, err := GetRelatedRepos(ctx, headGitRepo)
+		relatedRepos, err := GetRelatedRepos(ctx, headRepo)
 		ctx.Data["RelatedRepos"] = relatedRepos
 	}
 	beforeCommitID := ctx.Data["BeforeCommitID"].(string)
