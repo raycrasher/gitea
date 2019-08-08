@@ -44,7 +44,7 @@
 					</div>
 					<div class="scrolling menu">
 						{{range .RelatedRepos}}
-							<div class="{{if eq $.HeadRepo .}}selected{{end}} item" data-url="{{$.RepoLink}}/compare/{{EscapePound $.BaseBranch}}...{{if not $.PullRequestCtx.SameRepo}}{{.User.Name}}:{{end}}{{EscapePound .}}">{{.User.Name}}:{{.Name}}</div>
+							<div class="item" data-url="{{$.RepoLink}}/compare/{{EscapePound $.BaseBranch}}...{{if not $.PullRequestCtx.SameRepo}}{{.User.Name}}:{{end}}{{EscapePound .Name}}">{{.User.Name}}:{{.Name}}</div>
 						{{end}}
 					</div>
 				</div>

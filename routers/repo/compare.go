@@ -114,7 +114,7 @@ func ParseCompareInfo(ctx *context.Context) (*models.User, *models.Repository, *
 		}
 	}
 
-	ctx.Data["HeadRepo"] = headGitRepo
+	ctx.Data["HeadRepo"] = headRepo
 
 	// user should have permission to read baseRepo's codes and pulls, NOT headRepo's
 	permBase, err := models.GetUserRepoPermission(baseRepo, ctx.User)
