@@ -324,7 +324,7 @@ func CompareDiff(ctx *context.Context) {
 		ctx.Data["HeadBranches"] = headBranches
 
 		// if fork, then get related repos
-		relatedRepos, err := GetRelatedRepos(ctx, ctx.Repo)
+		relatedRepos, err := GetRelatedRepos(ctx, &ctx.Repo)
 		ctx.Data["RelatedRepos"] = relatedRepos
 	}
 	beforeCommitID := ctx.Data["BeforeCommitID"].(string)
@@ -365,7 +365,7 @@ func GetRelatedRepos(ctx *context.Context, repo *models.Repository) ([]*models.R
 
 	repoHash[repo] = dummy
 
-	repos := make([]*models.Repository, nil, len(repoHash))
+	repos := make([]*models.Repository, 0, len(repoHash))
 
 	for k := range repoHash {
         repos = append(repos, k)
