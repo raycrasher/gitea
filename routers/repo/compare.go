@@ -114,6 +114,8 @@ func ParseCompareInfo(ctx *context.Context) (*models.User, *models.Repository, *
 		}
 	}
 
+	ctx.Data["HeadRepo"] = headRepo
+
 	// user should have permission to read baseRepo's codes and pulls, NOT headRepo's
 	permBase, err := models.GetUserRepoPermission(baseRepo, ctx.User)
 	if err != nil {
@@ -369,7 +371,7 @@ func GetRelatedRepos(ctx *Context, repo *models.Repository) ([]*Repository, erro
         repos = append(repos, k)
     }
 	
-	return 
+	return repos, err
 }
 
 // RetrieveBaseRepo retrieves base repository
